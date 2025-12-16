@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+#timer-widget {
+  width: 320px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #ffffff;
+  font-weight: 600;
+}
+
+#time-display {
+  font-size: 32px;
+  margin: 12px 0;
+}
+
+#start-btn {
+  width: 100%;
+  background: #0E2F76;
+  color: white;
+}
