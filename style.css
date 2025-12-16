@@ -40,3 +40,24 @@ button {
   background: #0E2F76;
   color: white;
 }
+/* ===== SCALE OVERRIDE (Notion Embed Size Fix) ===== */
+
+:root {
+  --scale: 2;
+}
+
+#timer-widget {
+  width: calc(320px * var(--scale));
+  padding: calc(16px * var(--scale));
+  border-radius: calc(12px * var(--scale));
+  margin: 0 auto;
+}
+
+button {
+  font-size: calc(14px * var(--scale));
+  padding: calc(10px * var(--scale)) calc(16px * var(--scale));
+}
+
+#time-display {
+  font-size: calc(32px * var(--scale));
+}
