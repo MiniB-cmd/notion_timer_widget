@@ -1,145 +1,129 @@
-/* =========================
-   상태 변수
-========================= */
-let startTime = null;
-let duration = 0;
-let interval = null;
-let isRunning = false;
+document.addEventListener("DOMContentLoaded", () => {
 
-/* =========================
-   DOM
-========================= */
-const timeDisplay = document.getElementById("time-display");
-const startBtn = document.getElementById("start-btn");
-const resetBtn = document.getElementById("reset-btn");
+  /* =========================
+     상태 변수
+  ========================= */
+  let startTime = null;
+  let duration = 0;
+  let interval = null;
+  let isRunning = false;
 
-/* =========================
-   누적 시간 버튼 (10분 / 30분)
-========================= */
-document.querySelectorAll("[data-add-minutes]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const addMinutes = Number(btn.dataset.addMinutes);
-    duration += addMinutes * 60 * 1000;
+  /* =========================
+     DOM
+  ========================= */
+  const timeDisplay = document.getElementById("time-display");
+  const startBtn = document.getElementById("start-btn");
+  const resetBtn = document.getElementById("reset-btn");
 
-    startTime = null;
-    isRunning = false;
-    clearInterval(interval);
+  /* =========================
+     누적 시간 버튼
+  ========================= */
+  document.querySelectorAll("[data-add-minutes]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const addMinutes = Number(btn.dataset.addMinutes);
+      duration += addMinutes * 60 * 1000;
 
-    updateDisplay(duration);
-    updateStartButton();
+      clearInterval(interval);
+      startTime = null;
+      isRunning = false;
+
+      updateDisplay(duration);
+      updateStartButton();
+    });
   });
-});
 
-/* =========================
-   START / PAUSE 버튼
-========================= */
-startBtn.addEventListener("click", () => {
-  if (duration <= 0) return;
+  /* =========================
+     START / PAUSE
+  ========================= */
+  startBtn.addEventListener("click", () => {
+    if (duration <= 0) return;
 
-  // ▶ START
-  if (!isRunning) {
-    startTime = Date.now();
-    isRunning = true;
+    if (!isRunning) {
+      startTime = Date.now();
+      isRunning = true;
 
-    localStorage.setItem("startTime", startTime);
-    localStorage.setItem("duration", duration);
+      localStorage.setItem("startTime", startTime);
+      localStorage.setItem("duration", duration);
 
-    startTimer();
-  }
-  // ⏸ PAUSE
-  else {
-    clearInterval(interval);
-    interval = null;
+      startTimer();
+    } else {
+      clearInterval(interval);
+      duration -= Date.now() - startTime;
 
-    duration -= Date.now() - startTime;
-    startTime = null;
-    isRunning = false;
+      startTime = null;
+      isRunning = false;
 
-    localStorage.removeItem("startTime");
-    localStorage.setItem("duration", duration);
-  }
-
-  updateStartButton();
-});
-
-/* =========================
-   RESET 버튼
-========================= */
-resetBtn.addEventListener("click", () => {
-  clearInterval(interval);
-  interval = null;
-
-  startTime = null;
-  duration = 0;
-  isRunning = false;
-
-  localStorage.removeItem("startTime");
-  localStorage.removeItem("duration");
-
-  updateDisplay(0);
-  updateStartButton();
-});
-
-/* =========================
-   타이머 실행
-========================= */
-function startTimer() {
-  clearInterval(interval);
-
-  interval = setInterval(() => {
-    const now = Date.now();
-    const elapsed = now - startTime;
-    const remaining = duration - elapsed;
-
-    if (remaining <= 0) {
-      finishTimer();
-      return;
+      localStorage.removeItem("startTime");
+      localStorage.setItem("duration", duration);
     }
 
-    updateDisplay(remaining);
-  }, 1000);
-}
+    updateStartButton();
+  });
 
-/* =========================
-   타이머 종료
-========================= */
-function finishTimer() {
-  clearInterval(interval);
-  interval = null;
+  /* =========================
+     RESET
+  ========================= */
+  resetBtn.addEventListener("click", () => {
+    clearInterval(interval);
 
-  duration = 0;
-  startTime = null;
-  isRunning = false;
+    startTime = null;
+    duration = 0;
+    isRunning = false;
 
-  localStorage.removeItem("startTime");
-  localStorage.removeItem("duration");
+    localStorage.clear();
 
-  updateDisplay(0);
-  updateStartButton();
-}
+    updateDisplay(0);
+    updateStartButton();
+  });
 
-/* =========================
-   화면 표시
-========================= */
-function updateDisplay(ms) {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
-  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  /* =========================
+     타이머
+  ========================= */
+  function startTimer() {
+    clearInterval(interval);
 
-  timeDisplay.innerText = `${minutes}:${seconds}`;
-}
+    interval = setInterval(() => {
+      const remaining = duration - (Date.now() - startTime);
 
-/* =========================
-   START 버튼 텍스트 변경
-========================= */
-function updateStartButton() {
-  startBtn.innerText = isRunning ? "PAUSE" : "START";
-}
+      if (remaining <= 0) {
+        finishTimer();
+        return;
+      }
 
-/* =========================
-   새로고침 복구
-========================= */
-window.addEventListener("load", () => {
+      updateDisplay(remaining);
+    }, 1000);
+  }
+
+  function finishTimer() {
+    clearInterval(interval);
+
+    startTime = null;
+    duration = 0;
+    isRunning = false;
+
+    localStorage.clear();
+
+    updateDisplay(0);
+    updateStartButton();
+  }
+
+  /* =========================
+     UI
+  ========================= */
+  function updateDisplay(ms) {
+    const sec = Math.max(0, Math.floor(ms / 1000));
+    const m = String(Math.floor(sec / 60)).padStart(2, "0");
+    const s = String(sec % 60).padStart(2, "0");
+    timeDisplay.textContent = `${m}:${s}`;
+  }
+
+  function updateStartButton() {
+    startBtn.textContent = isRunning ? "PAUSE" : "START";
+  }
+
+  /* =========================
+     새로고침 복구
+  ========================= */
   const savedStart = localStorage.getItem("startTime");
   const savedDuration = localStorage.getItem("duration");
 
@@ -154,4 +138,5 @@ window.addEventListener("load", () => {
     startTimer();
     updateStartButton();
   }
+
 });
