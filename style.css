@@ -1,3 +1,16 @@
+/* =========================
+   기본 설정
+========================= */
+:root {
+  --scale: 2;
+
+  --bg-widget: #f9f9f9;
+  --bg-btn: #ffffff;
+  --primary: #0E2F76;
+  --danger: #e53935;
+  --text-dark: #222;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,12 +22,14 @@ body {
    타이머 컨테이너
 ========================= */
 #timer-widget {
-  width: 320px;
-  padding: 16px;
-  border-radius: 12px;
-  background: #f9f9f9;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  width: calc(320px * var(--scale));
+  padding: calc(16px * var(--scale));
+  border-radius: calc(14px * var(--scale));
+  background: var(--bg-widget);
+  box-shadow:
+    0 calc(4px * var(--scale)) calc(12px * var(--scale)) rgba(0,0,0,0.08);
   text-align: center;
+  margin: 0 auto;
 }
 
 /* =========================
@@ -22,73 +37,57 @@ body {
 ========================= */
 .preset-buttons {
   display: flex;
-  gap: 8px;
+  gap: calc(8px * var(--scale));
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: calc(12px * var(--scale));
 }
 
 /* =========================
    공통 버튼
 ========================= */
 button {
-  padding: 8px 12px;
-  border-radius: 8px;
+  font-size: calc(14px * var(--scale));
+  padding: calc(10px * var(--scale)) calc(16px * var(--scale));
+  border-radius: calc(10px * var(--scale));
   border: none;
   cursor: pointer;
-  background: #ffffff;
+  background: var(--bg-btn);
   font-weight: 600;
+  color: var(--text-dark);
+
+  box-shadow:
+    0 calc(2px * var(--scale)) calc(4px * var(--scale)) rgba(0,0,0,0.08);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+/* 버튼 hover */
+button:hover {
+  transform: translateY(calc(-1px * var(--scale)));
+  box-shadow:
+    0 calc(4px * var(--scale)) calc(8px * var(--scale)) rgba(0,0,0,0.12);
+}
+
+/* 버튼 눌림 */
+button:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 calc(2px * var(--scale)) calc(4px * var(--scale)) rgba(0,0,0,0.15);
 }
 
 /* =========================
    시간 표시
 ========================= */
 #time-display {
-  font-size: 32px;
-  margin: 12px 0;
-}
-
-/* =========================
-   START 버튼
-========================= */
-#startBtn {
-  width: 100%;
-  background: #0E2F76;
-  color: white;
-}
-
-/* =========================
-   RESET 버튼 (추가된 부분)
-========================= */
-.secondary-btn {
-  width: 33.333%;
-  margin: calc(8px * var(--scale)) auto 0;
-  background-color: #e53935;
-  color: #ffffff;
-  border-radius: calc(12px * var(--scale));
-}
-
-/* =========================
-   SCALE OVERRIDE (Notion Embed Size Fix)
-========================= */
-:root {
-  --scale: 2;
-}
-
-#timer-widget {
-  width: calc(320px * var(--scale));
-  padding: calc(16px * var(--scale));
-  border-radius: calc(12px * var(--scale));
-  margin: 0 auto;
-}
-
-button {
-  font-size: calc(14px * var(--scale));
-  padding: calc(10px * var(--scale)) calc(16px * var(--scale));
-}
-
-#time-display {
   font-size: calc(32px * var(--scale));
+  font-weight: 700;
+  margin: calc(14px * var(--scale)) 0;
+  letter-spacing: 0.05em;
 }
+
 /* =========================
    START / RESET 버튼 영역
 ========================= */
@@ -98,17 +97,53 @@ button {
   margin-top: calc(12px * var(--scale));
 }
 
-/* START 버튼: 길게 */
+/* =========================
+   START 버튼 (메인 + 빛나는 효과)
+========================= */
 #start-btn {
-  flex: 1; /* 최대한 넓게 */
-  background: #0E2F76;
-  color: white;
-}
-
-/* RESET 버튼: START 버튼 보다 짧게 */
-.secondary-btn {
-  flex: 0 0 15%;
-  background-color: #e53935;
+  flex: 1;
+  background: var(--primary);
   color: #ffffff;
+
+  box-shadow:
+    0 calc(4px * var(--scale)) calc(10px * var(--scale)) rgba(14,47,118,0.35),
+    0 0 calc(12px * var(--scale)) rgba(14,47,118,0.25);
+
+  position: relative;
+  overflow: hidden;
 }
 
+/* START 버튼 hover 시 더 밝게 */
+#start-btn:hover {
+  box-shadow:
+    0 calc(6px * var(--scale)) calc(14px * var(--scale)) rgba(14,47,118,0.45),
+    0 0 calc(20px * var(--scale)) rgba(14,47,118,0.4);
+}
+
+/* START 버튼 눌림 */
+#start-btn:active {
+  box-shadow:
+    inset 0 calc(3px * var(--scale)) calc(6px * var(--scale)) rgba(0,0,0,0.25);
+}
+
+/* =========================
+   RESET 버튼 (서브 액션)
+========================= */
+#reset-btn {
+  flex: 0 0 15%;
+  background: var(--danger);
+  color: #ffffff;
+
+  box-shadow:
+    0 calc(3px * var(--scale)) calc(8px * var(--scale)) rgba(229,57,53,0.35);
+}
+
+#reset-btn:hover {
+  box-shadow:
+    0 calc(5px * var(--scale)) calc(12px * var(--scale)) rgba(229,57,53,0.45);
+}
+
+#reset-btn:active {
+  box-shadow:
+    inset 0 calc(2px * var(--scale)) calc(4px * var(--scale)) rgba(0,0,0,0.25);
+}
