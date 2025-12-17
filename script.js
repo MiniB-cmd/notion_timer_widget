@@ -18,7 +18,7 @@ document.querySelectorAll("[data-add-minutes]").forEach(btn => {
 /* =========================
    START 버튼
 ========================= */
-document.getElementById("start-btn").addEventListener("click", () => {
+document.getElementById("startBtn").addEventListener("click", () => {
   if (duration <= 0) return;
 
   startTime = Date.now();
