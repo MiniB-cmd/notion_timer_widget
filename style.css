@@ -5,6 +5,9 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont;
 }
 
+/* =========================
+   타이머 컨테이너
+========================= */
 #timer-widget {
   width: 320px;
   padding: 16px;
@@ -14,6 +17,9 @@ body {
   text-align: center;
 }
 
+/* =========================
+   프리셋 버튼 영역
+========================= */
 .preset-buttons {
   display: flex;
   gap: 8px;
@@ -21,6 +27,9 @@ body {
   margin-bottom: 12px;
 }
 
+/* =========================
+   공통 버튼
+========================= */
 button {
   padding: 8px 12px;
   border-radius: 8px;
@@ -30,18 +39,37 @@ button {
   font-weight: 600;
 }
 
+/* =========================
+   시간 표시
+========================= */
 #time-display {
   font-size: 32px;
   margin: 12px 0;
 }
 
+/* =========================
+   START 버튼
+========================= */
 #start-btn {
   width: 100%;
   background: #0E2F76;
   color: white;
 }
-/* ===== SCALE OVERRIDE (Notion Embed Size Fix) ===== */
 
+/* =========================
+   RESET 버튼 (추가된 부분)
+========================= */
+.secondary-btn {
+  width: 33.333%;
+  margin: calc(8px * var(--scale)) auto 0;
+  background-color: #e53935;
+  color: #ffffff;
+  border-radius: calc(12px * var(--scale));
+}
+
+/* =========================
+   SCALE OVERRIDE (Notion Embed Size Fix)
+========================= */
 :root {
   --scale: 2;
 }
