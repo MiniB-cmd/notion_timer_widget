@@ -89,3 +89,26 @@ button {
 #time-display {
   font-size: calc(32px * var(--scale));
 }
+/* =========================
+   START / RESET 버튼 영역
+========================= */
+.action-buttons {
+  display: flex;
+  gap: calc(12px * var(--scale));
+  margin-top: calc(12px * var(--scale));
+}
+
+/* START 버튼: 길게 */
+#start-btn {
+  flex: 1; /* 최대한 넓게 */
+  background: #0E2F76;
+  color: white;
+}
+
+/* RESET 버튼: START 버튼 보다 짧게 */
+.secondary-btn {
+  flex: 0 0 15%;
+  background-color: #e53935;
+  color: #ffffff;
+}
+
