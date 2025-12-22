@@ -4,9 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
      상태 변수
   ========================= */
   let startTime = null;
-  let duration = 0;
+  let duration = 0;      // countdown용
+  let elapsed = 0;       // countup용
   let interval = null;
   let isRunning = false;
+  let mode = "down";     // "down" | "up"
 
   /* =========================
      DOM
@@ -16,13 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("reset-btn");
 
   /* =========================
-     누적 시간 버튼
+     누적 시간 버튼 (카운트다운 전용)
   ========================= */
   document.querySelectorAll("[data-add-minutes]").forEach(btn => {
     btn.addEventListener("click", () => {
       const addMinutes = Number(btn.dataset.addMinutes);
       duration += addMinutes * 60 * 1000;
 
+      mode = "down";
       clearInterval(interval);
       startTime = null;
       isRunning = false;
@@ -36,25 +39,33 @@ document.addEventListener("DOMContentLoaded", () => {
      START / PAUSE
   ========================= */
   startBtn.addEventListener("click", () => {
-    if (duration <= 0) return;
 
+    // ▶️ START
     if (!isRunning) {
       startTime = Date.now();
       isRunning = true;
 
-      localStorage.setItem("startTime", startTime);
-      localStorage.setItem("duration", duration);
+      if (duration <= 0) {
+        mode = "up";
+        elapsed = elapsed || 0;
+      } else {
+        mode = "down";
+      }
 
       startTimer();
-    } else {
+    }
+    // ⏸ PAUSE
+    else {
       clearInterval(interval);
-      duration -= Date.now() - startTime;
+
+      if (mode === "down") {
+        duration -= Date.now() - startTime;
+      } else {
+        elapsed += Date.now() - startTime;
+      }
 
       startTime = null;
       isRunning = false;
-
-      localStorage.removeItem("startTime");
-      localStorage.setItem("duration", duration);
     }
 
     updateStartButton();
@@ -68,9 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startTime = null;
     duration = 0;
+    elapsed = 0;
     isRunning = false;
-
-    localStorage.clear();
+    mode = "down";
 
     updateDisplay(0);
     updateStartButton();
@@ -83,14 +94,18 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(interval);
 
     interval = setInterval(() => {
-      const remaining = duration - (Date.now() - startTime);
+      const diff = Date.now() - startTime;
 
-      if (remaining <= 0) {
-        finishTimer();
-        return;
+      if (mode === "down") {
+        const remaining = duration - diff;
+        if (remaining <= 0) {
+          finishTimer();
+          return;
+        }
+        updateDisplay(remaining);
+      } else {
+        updateDisplay(elapsed + diff);
       }
-
-      updateDisplay(remaining);
     }, 1000);
   }
 
@@ -100,8 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startTime = null;
     duration = 0;
     isRunning = false;
-
-    localStorage.clear();
+    mode = "down";
 
     updateDisplay(0);
     updateStartButton();
@@ -111,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
      UI
   ========================= */
   function updateDisplay(ms) {
-    const sec = Math.max(0, Math.floor(ms / 1000));
+    const sec = Math.floor(ms / 1000);
     const m = String(Math.floor(sec / 60)).padStart(2, "0");
     const s = String(sec % 60).padStart(2, "0");
     timeDisplay.textContent = `${m}:${s}`;
@@ -119,24 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateStartButton() {
     startBtn.textContent = isRunning ? "PAUSE" : "START";
-  }
-
-  /* =========================
-     새로고침 복구
-  ========================= */
-  const savedStart = localStorage.getItem("startTime");
-  const savedDuration = localStorage.getItem("duration");
-
-  if (savedDuration) {
-    duration = Number(savedDuration);
-    updateDisplay(duration);
-  }
-
-  if (savedStart) {
-    startTime = Number(savedStart);
-    isRunning = true;
-    startTimer();
-    updateStartButton();
   }
 
 });
